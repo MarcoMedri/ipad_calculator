@@ -106,10 +106,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
-    buildButton('C', color: Colors.redAccent, onPressed: clear),
-    buildButton('⌫', color: Colors.grey, onPressed: delete),
-    buildButton('%', color: Colors.grey, onPressed: () => updateCalculation('/100')),
-    buildButton('÷', color: Colors.blue, onPressed: () => updateCalculation('/')),
+    buildButton('C', color: Colors.redAccent, onPressed: clear, textColor: Colors.black),
+    buildButton('⌫', color: Colors.white60, onPressed: delete, textColor: Colors.black),
+    buildButton('%', color: Colors.white60, onPressed: () => updateCalculation('/100'), textColor: Colors.black),
+    buildButton('÷', color: Colors.orange, onPressed: () => updateCalculation('/')),
     ],
     ),
     SizedBox(height: 16),
@@ -119,7 +119,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     buildButton('7', onPressed: () => updateCalculation('7')),
     buildButton('8', onPressed: () => updateCalculation('8')),
     buildButton('9', onPressed: () => updateCalculation('9')),
-    buildButton('×', color: Colors.blue, onPressed: () => updateCalculation('*')),
+    buildButton('×', color: Colors.orange, onPressed: () => updateCalculation('*')),
     ],
     ),
     SizedBox(height: 16),
@@ -129,7 +129,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           buildButton('4', onPressed: () => updateCalculation('4')),
           buildButton('5', onPressed: () => updateCalculation('5')),
           buildButton('6', onPressed: () => updateCalculation('6')),
-          buildButton('-', color: Colors.blue, onPressed: () => updateCalculation('-')),
+          buildButton('-', color: Colors.orange, onPressed: () => updateCalculation('-')),
         ],
       ),
       SizedBox(height: 16),
@@ -139,7 +139,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           buildButton('1', onPressed: () => updateCalculation('1')),
           buildButton('2', onPressed: () => updateCalculation('2')),
           buildButton('3', onPressed: () => updateCalculation('3')),
-          buildButton('+', color: Colors.blue, onPressed: () => updateCalculation('+')),
+          buildButton('+', color: Colors.orange, onPressed: () => updateCalculation('+')),
         ],
       ),
       SizedBox(height: 16),
@@ -149,7 +149,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           buildButton('±', onPressed: () => updateCalculation('-$currentCalculation')),
           buildButton('0', onPressed: () => updateCalculation('0')),
           buildButton('.', onPressed: () => updateCalculation('.')),
-          buildButton('=', color: Colors.blue, onPressed: evaluate),
+          buildButton('=', color: Colors.orange, onPressed: evaluate),
         ],
       ),
       Spacer(),
@@ -178,13 +178,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              buildButton('⌫', color: Colors.grey, onPressed: delete),
-              buildButton('%', color: Colors.grey, onPressed: () => updateCalculation('/100')),
-              buildButton('÷', color: Colors.blue, onPressed: () => updateCalculation('/')),
-              buildButton('×', color: Colors.blue, onPressed: () => updateCalculation('*')),
-              buildButton('-', color: Colors.blue, onPressed: () => updateCalculation('-')),
-              buildButton('+', color: Colors.blue, onPressed: () => updateCalculation('+')),
-              buildButton('=', color: Colors.blue, onPressed: evaluate),
+              buildButton('⌫', color: Colors.orange, onPressed: delete, textColor: Colors.black),
+              buildButton('%', color: Colors.orange, onPressed: () => updateCalculation('/100'), textColor: Colors.black),
+              buildButton('÷', color: Colors.orange, onPressed: () => updateCalculation('/')),
+              buildButton('×', color: Colors.orange, onPressed: () => updateCalculation('*')),
+              buildButton('-', color: Colors.orange, onPressed: () => updateCalculation('-')),
+              buildButton('+', color: Colors.orange, onPressed: () => updateCalculation('+')),
+              buildButton('=', color: Colors.orange, onPressed: evaluate),
             ],
           ),
           Spacer(),
@@ -193,22 +193,22 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget buildButton(String text, {Color? color, void Function()? onPressed}) {
+  Widget buildButton(String text, {Color? color = Colors.black38, void Function()? onPressed, Color? textColor = Colors.white}) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         minWidth: 48,
         minHeight: 48,
         maxWidth: double.infinity,
         maxHeight: double.infinity,
       ),
       child: ElevatedButton(
-        child: Text(text, style: TextStyle(fontSize: 24)),
         style: ElevatedButton.styleFrom(
           primary: color ?? Theme.of(context).colorScheme.primary,
           onPrimary: Theme.of(context).colorScheme.onPrimary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(1000)),
         ),
         onPressed: onPressed,
+        child: Text(text, style: TextStyle(fontSize: 24,color: textColor)),
       ),
     );
   }
