@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Calculator',
-      theme: ThemeData.light(),
+      theme: ThemeData.dark(),
       darkTheme: ThemeData.dark(),
-      home: CalculatorScreen(),
+      home: const CalculatorScreen(),
     );
   }
 }
 
 class CalculatorScreen extends StatefulWidget {
+  const CalculatorScreen({super.key});
+
   @override
   _CalculatorScreenState createState() => _CalculatorScreenState();
 }
@@ -52,10 +54,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     setState(() {});
   }
 
+  void changeSign() {
+    try {
+      previousCalculation = currentCalculation;
+      currentCalculation = (eval(currentCalculation)*-1).toString().replaceAll('.', ',');
+    } catch (e) {
+      currentCalculation = 'Error';
+    }
+    setState(() {});
+  }
+
   void evaluate() {
     try {
       previousCalculation = currentCalculation;
-      currentCalculation = eval(currentCalculation).toString();
+      currentCalculation = eval(currentCalculation).toString().replaceAll('.', ',');
     } catch (e) {
       currentCalculation = 'Error';
     }
@@ -65,7 +77,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   double eval(String expression) {
     try {
       Parser p = Parser();
-      Expression exp = p.parse(expression);
+      Expression exp = p.parse(expression.replaceAll(',', '.'));
       ContextModel cm = ContextModel();
       return exp.evaluate(EvaluationType.REAL, cm);
     } catch (e) {
@@ -77,8 +89,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calculator'),
-        centerTitle: true,
+        /*title: Text('Calculator'),
+        centerTitle: true,*/
       ),
       body: OrientationBuilder(
         builder: (BuildContext context, Orientation orientation) {
@@ -92,108 +104,80 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget buildPortraitLayout() {
+  Widget buildRightSide({vertical = true}) {
     return Padding(
-        padding: EdgeInsets.all(16),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.end,
-    children: [
-    Spacer(),
-    Text(previousCalculation, style: TextStyle(fontSize: 24)),
-    SizedBox(height: 16),
-    Text(currentCalculation, style: TextStyle(fontSize: 48)),
-    SizedBox(height: 16),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-    buildButton('C', color: Colors.redAccent, onPressed: clear, textColor: Colors.black),
-    buildButton('⌫', color: Colors.white60, onPressed: delete, textColor: Colors.black),
-    buildButton('%', color: Colors.white60, onPressed: () => updateCalculation('/100'), textColor: Colors.black),
-    buildButton('÷', color: Colors.orange, onPressed: () => updateCalculation('/')),
-    ],
-    ),
-    SizedBox(height: 16),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-    buildButton('7', onPressed: () => updateCalculation('7')),
-    buildButton('8', onPressed: () => updateCalculation('8')),
-    buildButton('9', onPressed: () => updateCalculation('9')),
-    buildButton('×', color: Colors.orange, onPressed: () => updateCalculation('*')),
-    ],
-    ),
-    SizedBox(height: 16),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          buildButton('4', onPressed: () => updateCalculation('4')),
-          buildButton('5', onPressed: () => updateCalculation('5')),
-          buildButton('6', onPressed: () => updateCalculation('6')),
-          buildButton('-', color: Colors.orange, onPressed: () => updateCalculation('-')),
-        ],
-      ),
-      SizedBox(height: 16),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          buildButton('1', onPressed: () => updateCalculation('1')),
-          buildButton('2', onPressed: () => updateCalculation('2')),
-          buildButton('3', onPressed: () => updateCalculation('3')),
-          buildButton('+', color: Colors.orange, onPressed: () => updateCalculation('+')),
-        ],
-      ),
-      SizedBox(height: 16),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          buildButton('±', onPressed: () => updateCalculation('-$currentCalculation')),
-          buildButton('0', onPressed: () => updateCalculation('0')),
-          buildButton('.', onPressed: () => updateCalculation('.')),
-          buildButton('=', color: Colors.orange, onPressed: evaluate),
-        ],
-      ),
-      Spacer(),
-    ],
-    ),
-    );
-  }
-
-  Widget buildLandscapeLayout() {
-    return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(vertical? 5 : 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(previousCalculation, style: TextStyle(fontSize: 24)),
-              buildButton('C', color: Colors.redAccent, onPressed: clear),
-            ],
-          ),
-          SizedBox(height: 16),
-          Text(currentCalculation, style: TextStyle(fontSize: 48)),
-          SizedBox(height: 16),
+          const Spacer(),
+          Text(previousCalculation, style: TextStyle(fontSize: vertical? 48 : 36)),
+          const SizedBox(height: 16),
+          Text(currentCalculation, style: TextStyle(fontSize: vertical? 96 : 48)),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              buildButton('⌫', color: Colors.orange, onPressed: delete, textColor: Colors.black),
-              buildButton('%', color: Colors.orange, onPressed: () => updateCalculation('/100'), textColor: Colors.black),
-              buildButton('÷', color: Colors.orange, onPressed: () => updateCalculation('/')),
-              buildButton('×', color: Colors.orange, onPressed: () => updateCalculation('*')),
-              buildButton('-', color: Colors.orange, onPressed: () => updateCalculation('-')),
-              buildButton('+', color: Colors.orange, onPressed: () => updateCalculation('+')),
-              buildButton('=', color: Colors.orange, onPressed: evaluate),
+              buildButton('C', color: Colors.redAccent, onPressed: clear, textColor: Colors.black, vertical: vertical),
+              buildButton('±', color: Colors.white60, onPressed: changeSign, textColor: Colors.black, vertical: vertical),
+              buildButton('%', color: Colors.white60, onPressed: () => updateCalculation('/100'), textColor: Colors.black, vertical: vertical),
+              buildButton('÷', color: Colors.orange, onPressed: () => updateCalculation('/'), vertical: vertical),
             ],
           ),
-          Spacer(),
+          SizedBox(height: vertical? 16 : 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildButton('7', onPressed: () => updateCalculation('7'), vertical: vertical),
+              buildButton('8', onPressed: () => updateCalculation('8'), vertical: vertical),
+              buildButton('9', onPressed: () => updateCalculation('9'), vertical: vertical),
+              buildButton('×', color: Colors.orange, onPressed: () => updateCalculation('*'), vertical: vertical),
+            ],
+          ),
+          SizedBox(height: vertical? 16 : 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildButton('4', onPressed: () => updateCalculation('4'), vertical: vertical),
+              buildButton('5', onPressed: () => updateCalculation('5'), vertical: vertical),
+              buildButton('6', onPressed: () => updateCalculation('6'), vertical: vertical),
+              buildButton('-', color: Colors.orange, onPressed: () => updateCalculation('-'), vertical: vertical),
+            ],
+          ),
+          SizedBox(height: vertical? 16 : 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildButton('1', onPressed: () => updateCalculation('1'), vertical: vertical),
+              buildButton('2', onPressed: () => updateCalculation('2'), vertical: vertical),
+              buildButton('3', onPressed: () => updateCalculation('3'), vertical: vertical),
+              buildButton('+', color: Colors.orange, onPressed: () => updateCalculation('+'), vertical: vertical),
+            ],
+          ),
+          SizedBox(height: vertical? 16 : 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildButton('0', onPressed: () => updateCalculation('0'), vertical: vertical, zero: true),
+              buildButton(',', onPressed: () => updateCalculation(','), vertical: vertical),
+              buildButton('=', color: Colors.orange, onPressed: evaluate, vertical: vertical),
+            ],
+          ),
+          SizedBox(height: vertical? 16 : 4),
         ],
-      ),
+      )
     );
   }
 
-  Widget buildButton(String text, {Color? color = Colors.black38, void Function()? onPressed, Color? textColor = Colors.white}) {
+  Widget buildPortraitLayout() {
+    return buildRightSide();
+  }
+
+  Widget buildLandscapeLayout() {
+    return buildRightSide(vertical: false);
+  }
+
+  Widget buildButton(String text, {zero= false, vertical = true, Color? color = Colors.black38, void Function()? onPressed, Color? textColor = Colors.white}) {/*
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minWidth: 48,
@@ -205,11 +189,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         style: ElevatedButton.styleFrom(
           primary: color ?? Theme.of(context).colorScheme.primary,
           onPrimary: Theme.of(context).colorScheme.onPrimary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(1000)),
+          shape: CircleBorder(),
+          padding: EdgeInsets.all(24),
         ),
         onPressed: onPressed,
         child: Text(text, style: TextStyle(fontSize: 24,color: textColor)),
       ),
+    );*/
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Theme.of(context).colorScheme.onPrimary, backgroundColor: color ?? Theme.of(context).colorScheme.primary,
+        shape: zero? RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(45),
+        ) : const CircleBorder(),
+        minimumSize: vertical? zero? const Size(352, 128) : const Size(128, 128) : zero? const Size(150, 64) : const Size (64, 64),
+      ),
+      onPressed: onPressed,
+      child: Text(text, style: TextStyle(fontSize: vertical? 36 : 18,color: textColor)),
     );
   }
 
